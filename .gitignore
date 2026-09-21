@@ -14,7 +14,8 @@ dist/
 *.tsbuildinfo
 
 # Dados locais (SQLite)
-data/
+/data/
+backend/data/
 *.db
 *.sqlite3
 

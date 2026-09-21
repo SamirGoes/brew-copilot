@@ -2,34 +2,34 @@
 
 ## 1. Project Setup - Backend
 
-- [ ] 1.1 Create backend/ directory with pyproject.toml (name: brew-copilot-backend, Python 3.12). Verify: `pip install -e .` succeeds
-- [ ] 1.2 Add dependencies: fastapi, uvicorn, sqlalchemy, pydantic, pydantic-settings. Verify: imports work in Python REPL
-- [ ] 1.3 Create directory structure: app/, app/models/, app/schemas/, app/calculators/, app/routers/, app/data/. Verify: all directories exist
-- [ ] 1.4 Download BJCP styles.json from https://github.com/ascholer/bjcp-styleview and save to app/data/styles.json. Verify: file exists and loads as valid JSON
+- [x] 1.1 Create backend/ directory with pyproject.toml (name: brew-copilot-backend, Python 3.12). Verify: `pip install -e .` succeeds
+- [x] 1.2 Add dependencies: fastapi, uvicorn, sqlalchemy, pydantic, pydantic-settings. Verify: imports work in Python REPL
+- [x] 1.3 Create directory structure: app/, app/models/, app/schemas/, app/calculators/, app/routers/, app/data/. Verify: all directories exist
+- [x] 1.4 Download BJCP styles.json from https://github.com/ascholer/bjcp-styleview and save to app/data/styles.json. Verify: file exists and loads as valid JSON
 - [ ] 1.5 Create backend/Dockerfile with Python 3.12-slim, uvicorn entrypoint. Verify: `docker build` succeeds
 
 ## 2. Project Setup - Frontend
 
-- [ ] 2.1 Create frontend/ with Vite + React + TypeScript: `npm create vite@latest frontend -- --template react-ts`. Verify: `npm run dev` starts on port 5173
-- [ ] 2.2 Install additional dependencies: axios (API client). Verify: `npm install` succeeds
-- [ ] 2.3 Create directory structure: src/api/, src/components/, src/hooks/, src/types/, src/styles/. Verify: all directories exist
+- [x] 2.1 Create frontend/ with Vite + React + TypeScript: `npm create vite@latest frontend -- --template react-ts`. Verify: `npm run dev` starts on port 5173
+- [x] 2.2 Install additional dependencies: axios (API client). Verify: `npm install` succeeds
+- [x] 2.3 Create directory structure: src/api/, src/components/, src/hooks/, src/types/, src/styles/. Verify: all directories exist
 - [ ] 2.4 Create frontend/Dockerfile with multi-stage build (node build + nginx). Verify: `docker build` succeeds
 - [ ] 2.5 Create nginx.conf with proxy to backend /api/. Verify: config is valid
 
 ## 3. Database Setup
 
-- [ ] 3.1 Create app/database.py with SQLAlchemy engine, sessionmaker, Base. Verify: can create in-memory test DB
-- [ ] 3.2 Create app/models/recipe.py with Recipe, Grain, HopAddition models. Verify: models create tables correctly
-- [ ] 3.3 Create app/models/session.py with BrewSession, SessionReading models. Verify: models create tables correctly
-- [ ] 3.4 Create app/schemas/ with Pydantic schemas for all models. Verify: schemas validate sample data
+- [x] 3.1 Create app/database.py with SQLAlchemy engine, sessionmaker, Base. Verify: can create in-memory test DB
+- [x] 3.2 Create app/models/recipe.py with Recipe, Grain, HopAddition models. Verify: models create tables correctly
+- [x] 3.3 Create app/models/session.py with BrewSession, SessionReading models. Verify: models create tables correctly
+- [x] 3.4 Create app/schemas/ with Pydantic schemas for all models. Verify: schemas validate sample data
 
 ## 4. Calculator Modules
 
-- [ ] 4.1 Implement app/calculators/mash.py with strike_water, mash_volume, grain_absorption, sparge_water functions. Verify: pytest tests pass for all scenarios in mash-calculator spec
-- [ ] 4.2 Implement app/calculators/gravity.py with sg_to_plato, plato_to_sg, efficiency, water_adjustment functions. Verify: pytest tests pass for all scenarios in gravity-tracker spec
+- [x] 4.1 Implement app/calculators/mash.py with strike_water, mash_volume, grain_absorption, sparge_water functions. Verify: pytest tests pass for all scenarios in mash-calculator spec
+- [x] 4.2 Implement app/calculators/gravity.py with sg_to_plato, plato_to_sg, efficiency, water_adjustment functions. Verify: pytest tests pass for all scenarios in gravity-tracker spec
 - [ ] 4.3 Implement app/calculators/hops.py with tinseth_ibu, utilization, recalculate_hops functions. Verify: pytest tests pass for all scenarios in hop-calculator spec
-- [ ] 4.4 Implement app/calculators/water.py with calculate_salts, calculate_acid functions for 3 profiles. Verify: pytest tests pass for all scenarios in water-chemistry spec
-- [ ] 4.5 Implement app/calculators/carbonation.py with priming_sugar, force_carb_psi functions. Verify: pytest tests pass for carbonation scenarios in brew-session spec
+- [x] 4.4 Implement app/calculators/water.py with calculate_salts, calculate_acid functions for 3 profiles. Verify: pytest tests pass for all scenarios in water-chemistry spec
+- [x] 4.5 Implement app/calculators/carbonation.py with priming_sugar, force_carb_psi functions. Verify: pytest tests pass for carbonation scenarios in brew-session spec
 - [ ] 4.6 Implement app/calculators/style_validator.py with load_styles, validate_params, deviation_severity functions. Verify: pytest tests pass for all scenarios in style-guidelines spec
 
 ## 5. API Routes
