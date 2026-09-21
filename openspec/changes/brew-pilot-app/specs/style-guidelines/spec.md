@@ -59,7 +59,7 @@ The system SHALL also validate actual achieved values against style ranges durin
 
 #### Scenario: Actual OG outside style
 - **WHEN** achieved OG is 1.048 and style minimum is 1.056
-- **THEN** system displays actual OG with red indicator and shows "-14% below style min"
+- **THEN** system displays actual OG with orange indicator and shows "-14% below style min"
 
 #### Scenario: Compare expected, actual, and style
 - **WHEN** viewing a parameter during session

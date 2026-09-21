@@ -6,8 +6,13 @@ from app.models.session import Phase
 
 
 class SessionCreate(BaseModel):
-    name: str = Field(min_length=1, max_length=200)
+    name: str | None = Field(default=None, min_length=1, max_length=200, description="Padrão: nome da receita")
     recipe_id: int | None = None
+    notes: str | None = None
+
+
+class SessionUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=200)
     notes: str | None = None
 
 
@@ -44,6 +49,7 @@ class SessionRead(BaseModel):
     id: int
     name: str
     recipe_id: int | None
+    recipe_name: str | None = None
     current_phase: Phase
     created_at: datetime
     completed_at: datetime | None

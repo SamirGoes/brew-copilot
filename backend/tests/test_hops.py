@@ -4,7 +4,6 @@ from app.calculators import hops
 
 
 def test_tinseth_single_addition():
-    # Spec diz "aproximadamente 25 IBU / 25%"; Tinseth padrão dá 20,8 IBU / 23,1%.
     assert hops.utilization(60, 1.050) == pytest.approx(0.2307, abs=1e-3)
     assert hops.tinseth_ibu(30, 6, 60, 20, 1.050) == pytest.approx(20.76, abs=0.05)
 

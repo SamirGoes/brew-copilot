@@ -13,12 +13,13 @@ class Base(DeclarativeBase):
     pass
 
 
-def make_engine(url: str) -> Engine:
+def make_engine(url: str, **kwargs) -> Engine:
     parsed = make_url(url)
     is_sqlite = parsed.get_backend_name() == "sqlite"
     if is_sqlite and parsed.database and parsed.database != ":memory:":
         Path(parsed.database).parent.mkdir(parents=True, exist_ok=True)
-    engine = create_engine(url, connect_args={"check_same_thread": False} if is_sqlite else {})
+    connect_args = {"check_same_thread": False} if is_sqlite else {}
+    engine = create_engine(url, connect_args=connect_args, **kwargs)
     if is_sqlite:
 
         @event.listens_for(engine, "connect")

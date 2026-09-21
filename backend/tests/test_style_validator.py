@@ -61,7 +61,6 @@ def test_actual_og_below_min_deviation(ipa):
     r = _one(ipa, og=1.048)
     assert round(r.deviation_pct) == -14
     assert r.message == "-14% abaixo do mín. do estilo"
-    # Pela regra de 15% do design isso é laranja; o cenário do spec diz vermelho.
     assert r.severity is Severity.SLIGHT
 
 

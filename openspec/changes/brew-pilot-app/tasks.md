@@ -6,15 +6,15 @@
 - [x] 1.2 Add dependencies: fastapi, uvicorn, sqlalchemy, pydantic, pydantic-settings. Verify: imports work in Python REPL
 - [x] 1.3 Create directory structure: app/, app/models/, app/schemas/, app/calculators/, app/routers/, app/data/. Verify: all directories exist
 - [x] 1.4 Download BJCP styles.json from https://github.com/ascholer/bjcp-styleview and save to app/data/styles.json. Verify: file exists and loads as valid JSON
-- [ ] 1.5 Create backend/Dockerfile with Python 3.12-slim, uvicorn entrypoint. Verify: `docker build` succeeds
+- [x] 1.5 Create backend/Dockerfile with Python 3.12-slim, uvicorn entrypoint. Verify: `docker build` succeeds
 
 ## 2. Project Setup - Frontend
 
 - [x] 2.1 Create frontend/ with Vite + React + TypeScript: `npm create vite@latest frontend -- --template react-ts`. Verify: `npm run dev` starts on port 5173
 - [x] 2.2 Install additional dependencies: axios (API client). Verify: `npm install` succeeds
 - [x] 2.3 Create directory structure: src/api/, src/components/, src/hooks/, src/types/, src/styles/. Verify: all directories exist
-- [ ] 2.4 Create frontend/Dockerfile with multi-stage build (node build + nginx). Verify: `docker build` succeeds
-- [ ] 2.5 Create nginx.conf with proxy to backend /api/. Verify: config is valid
+- [x] 2.4 Create frontend/Dockerfile with multi-stage build (node build + nginx). Verify: `docker build` succeeds
+- [x] 2.5 Create nginx.conf with proxy to backend /api/. Verify: config is valid
 
 ## 3. Database Setup
 
@@ -27,18 +27,18 @@
 
 - [x] 4.1 Implement app/calculators/mash.py with strike_water, mash_volume, grain_absorption, sparge_water functions. Verify: pytest tests pass for all scenarios in mash-calculator spec
 - [x] 4.2 Implement app/calculators/gravity.py with sg_to_plato, plato_to_sg, efficiency, water_adjustment functions. Verify: pytest tests pass for all scenarios in gravity-tracker spec
-- [ ] 4.3 Implement app/calculators/hops.py with tinseth_ibu, utilization, recalculate_hops functions. Verify: pytest tests pass for all scenarios in hop-calculator spec
+- [x] 4.3 Implement app/calculators/hops.py with tinseth_ibu, utilization, recalculate_hops functions. Verify: pytest tests pass for all scenarios in hop-calculator spec
 - [x] 4.4 Implement app/calculators/water.py with calculate_salts, calculate_acid functions for 3 profiles. Verify: pytest tests pass for all scenarios in water-chemistry spec
 - [x] 4.5 Implement app/calculators/carbonation.py with priming_sugar, force_carb_psi functions. Verify: pytest tests pass for carbonation scenarios in brew-session spec
-- [ ] 4.6 Implement app/calculators/style_validator.py with load_styles, validate_params, deviation_severity functions. Verify: pytest tests pass for all scenarios in style-guidelines spec
+- [x] 4.6 Implement app/calculators/style_validator.py with load_styles, validate_params, deviation_severity functions. Verify: pytest tests pass for all scenarios in style-guidelines spec
 
 ## 5. API Routes
 
-- [ ] 5.1 Create app/main.py with FastAPI app, CORS middleware (allow localhost:5173), include routers. Verify: `uvicorn app.main:app` starts on port 8000, /docs shows Swagger UI
-- [ ] 5.2 Implement app/routers/calculate.py with POST endpoints /mash, /gravity, /hops, /water. Verify: curl/httpie requests return correct calculations
-- [ ] 5.3 Implement app/routers/recipes.py with CRUD endpoints. Verify: can create, read, update, delete recipes via API
-- [ ] 5.4 Implement app/routers/sessions.py with CRUD, phase advancement, reading registration. Verify: can create session, advance phases, record readings
-- [ ] 5.5 Implement app/routers/styles.py with GET /styles, GET /styles/{id}, POST /validate/style. Verify: curl requests return styles and validation results
+- [x] 5.1 Create app/main.py with FastAPI app, CORS middleware (allow localhost:5173), include routers. Verify: `uvicorn app.main:app` starts on port 8000, /docs shows Swagger UI
+- [x] 5.2 Implement app/routers/calculate.py with POST endpoints /mash, /gravity, /hops, /water. Verify: curl/httpie requests return correct calculations
+- [x] 5.3 Implement app/routers/recipes.py with CRUD endpoints. Verify: can create, read, update, delete recipes via API
+- [x] 5.4 Implement app/routers/sessions.py with CRUD, phase advancement, reading registration. Verify: can create session, advance phases, record readings
+- [x] 5.5 Implement app/routers/styles.py with GET /styles, GET /styles/{id}, POST /validate/style. Verify: curl requests return styles and validation results
 
 ## 6. Frontend - Base Structure
 
