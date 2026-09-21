@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Dados locais (SQLite)
+data/
+*.db
+*.sqlite3
+
+# Ambiente
+.env
+.env.*
+!.env.example
+
+# Editor / SO
+.DS_Store
+.idea/
+.vscode/
+
+# Claude Code (configurações locais)
+.claude/settings.local.json
+.codegraph/
