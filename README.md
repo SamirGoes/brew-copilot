@@ -46,11 +46,29 @@ O app fica na porta 3000. Só o frontend é exposto: o nginx alcança a API pela
 
 Imagens (`linux/amd64`): [`samirgoes/brew-copilot-backend`](https://hub.docker.com/r/samirgoes/brew-copilot-backend) e [`samirgoes/brew-copilot-frontend`](https://hub.docker.com/r/samirgoes/brew-copilot-frontend), nas tags `v1` e `latest`.
 
-Para fixar outra versão sem editar o arquivo, ou trocar a porta:
+#### Escolhendo a porta e a versão
+
+Num servidor que já tem outras coisas rodando, a porta se ajusta por variável — sem editar o compose:
 
 ```bash
-BREW_VERSION=v2 BREW_PORT=8080 docker compose -f docker-compose.prod.yml up -d
+BREW_PORT=9090 docker compose -f docker-compose.prod.yml up -d
 ```
+
+| Variável | Padrão | O que faz |
+|---|---|---|
+| `BREW_PORT` | `3000` | Porta do app no servidor |
+| `BREW_API_PORT` | `8000` | Porta do `/docs`, se você descomentar o `ports` do backend |
+| `BREW_VERSION` | `v1` | Tag das imagens a usar |
+
+Para não repetir isso a cada comando, crie um `.env` ao lado do compose — o Docker lê sozinho:
+
+```bash
+# .env
+BREW_PORT=9090
+BREW_VERSION=v1
+```
+
+Se a porta escolhida já estiver ocupada, o container não sobe e o Docker diz qual é o conflito (`address already in use`); é só escolher outra.
 
 > **Sem autenticação:** o app é de uso pessoal e não tem login (ver Não-objetivos). Quem alcançar a porta lê e escreve tudo — exponha só na sua rede local ou atrás de VPN, proxy com senha ou firewall.
 

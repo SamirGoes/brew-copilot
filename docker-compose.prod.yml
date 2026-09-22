@@ -12,7 +12,7 @@ services:
     # Sem porta publicada: o nginx do frontend já alcança a API pela rede interna.
     # Descomente para expor o /docs (a API em si já é acessível por /api no frontend):
     # ports:
-    #   - "8000:8000"
+    #   - "${BREW_API_PORT:-8000}:8000"
     volumes:
       # Volume nomeado: o SQLite sobrevive a atualizar ou recriar o container.
       - brew-data:/app/data
