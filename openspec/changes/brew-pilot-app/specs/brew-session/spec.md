@@ -78,3 +78,25 @@ The system SHALL display a summary view of completed sessions showing key metric
 #### Scenario: View session summary
 - **WHEN** session is complete
 - **THEN** system displays: actual vs expected OG, FG, ABV, IBU, efficiency, and notes on major deviations
+
+### Requirement: Single-page brew day
+The system SHALL provide a single brew day page where the user selects the style, fills the recipe parameters, and records actual values for every phase, all on the same screen.
+
+#### Scenario: Compare recipe against style before brewing
+- **WHEN** user selects "American IPA (21A)" and fills OG 1.060, FG 1.012, IBU 75, SRM 8, ABV 6.3
+- **THEN** page shows each parameter with the style range and conformity indicator, plus the "X/5 within style" summary
+
+#### Scenario: Record phase values on the same page
+- **WHEN** user records mash values and advances to Lauter
+- **THEN** mash values (expected, actual, deviation) remain visible on the page and the Lauter section becomes active
+
+#### Scenario: Resume brew day
+- **WHEN** user reopens the application during an unfinished session
+- **THEN** the brew day page restores style, recipe parameters and all recorded phase values
+
+### Requirement: Calculators as tools
+The system SHALL keep the standalone calculators (mash, gravity, hops, water, styles) available as tools, accessible from the brew day page without losing the session data.
+
+#### Scenario: Open a tool during the brew day
+- **WHEN** user is in the Boil phase and opens the Hops tool
+- **THEN** the tool opens and returning to the brew day page shows all data unchanged

@@ -37,6 +37,15 @@ class Recipe(Base):
     og: Mapped[float | None] = mapped_column(Float, default=None)
     fg: Mapped[float | None] = mapped_column(Float, default=None)
 
+    # Demais alvos comparados com o estilo BJCP
+    ibu: Mapped[float | None] = mapped_column(Float, default=None)
+    srm: Mapped[float | None] = mapped_column(Float, default=None)
+    abv: Mapped[float | None] = mapped_column(Float, default=None)
+
+    # Água e volumes adicionais
+    preboil_volume_l: Mapped[float | None] = mapped_column(Float, default=None)
+    water_profile: Mapped[str | None] = mapped_column(String(20), default=None)
+
     # Fermentação
     yeast: Mapped[str | None] = mapped_column(String(100), default=None)
     fermentation_temp_c: Mapped[float | None] = mapped_column(Float, default=None)

@@ -3,6 +3,9 @@ RECIPE = {
     "style_number": "21A",
     "og": 1.052,
     "fg": 1.012,
+    "ibu": 45,
+    "srm": 6,
+    "abv": 5.2,
     "grains": [{"name": "Pilsen", "weight_kg": 5}, {"name": "Crystal", "weight_kg": 0.3, "potential_ppg": 34}],
     "hops": [{"variety": "Magnum", "weight_g": 30, "alpha_acid_pct": 12, "boil_time_min": 60}],
 }
@@ -13,6 +16,7 @@ def test_recipe_crud(client):
     assert created.status_code == 201
     rid = created.json()["id"]
     assert len(created.json()["grains"]) == 2
+    assert (created.json()["ibu"], created.json()["srm"], created.json()["abv"]) == (45, 6, 5.2)
 
     assert client.get(f"/api/recipes/{rid}").json()["name"] == "Session IPA"
     assert len(client.get("/api/recipes").json()) == 1

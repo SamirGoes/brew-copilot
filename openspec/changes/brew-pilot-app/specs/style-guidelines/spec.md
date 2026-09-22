@@ -82,3 +82,26 @@ The system SHALL show the exact deviation percentage or absolute value when a pa
 #### Scenario: Show deviation above maximum
 - **WHEN** recipe ABV is 8.0% and style maximum is 7.5%
 - **THEN** system shows "0.5% above max" or "+7% above max"
+
+### Requirement: Display color in SRM or EBC
+The system SHALL let the user choose the color unit (SRM or EBC) with a selector placed next to each color field and color range (not in the app header), without changing the field's height or position relative to sibling fields. Color values are stored in SRM and converted for display and input using EBC = SRM × 1.97. The choice applies app-wide (recipe, style ranges, conformity badges, style tool) and is remembered on the device.
+
+#### Scenario: Show style range in EBC
+- **WHEN** user selects EBC and views "American IPA (21A)"
+- **THEN** system displays the color range as 12–28 EBC
+
+#### Scenario: Input color in EBC
+- **WHEN** user has EBC selected and inputs recipe color 16
+- **THEN** system stores 8.1 SRM and validates it as within the style range
+
+#### Scenario: Switch unit beside the field
+- **WHEN** user switches to EBC using the selector next to the recipe color field
+- **THEN** the field, the style color range and the conformity badges are converted to EBC
+
+#### Scenario: Selector does not break field alignment
+- **WHEN** the color field sits beside another field in the same row (e.g. IBU) on any screen width, including mobile
+- **THEN** both fields' input boxes stay aligned at the same height, and the unit selector stays on a single line
+
+#### Scenario: Remember color unit
+- **WHEN** user selects EBC and reopens the application
+- **THEN** color values are still displayed in EBC

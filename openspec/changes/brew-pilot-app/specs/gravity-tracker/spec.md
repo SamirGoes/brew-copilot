@@ -64,3 +64,22 @@ The system SHALL convert between specific gravity (SG) and degrees Plato automat
 #### Scenario: Input in Plato
 - **WHEN** user inputs gravity as 12 Plato
 - **THEN** system converts and stores as SG (approximately 1.048)
+
+### Requirement: Masked gravity input
+The system SHALL provide a masked input for every specific gravity field (OG, FG, mash/pre-boil/post-boil gravity, and style targets), so the user types digits only and the decimal point is inserted automatically after the first digit.
+
+#### Scenario: Type OG without the decimal point
+- **WHEN** user types "1052" in an OG field
+- **THEN** field displays "1.052" and stores 1.052
+
+#### Scenario: Partial input while typing
+- **WHEN** user has typed "10"
+- **THEN** field displays "1.0" and no value is sent for calculation until 4 digits are entered
+
+#### Scenario: Gravity below 1.000
+- **WHEN** user types "0998" in an FG field
+- **THEN** field displays "0.998" and stores 0.998
+
+#### Scenario: Numeric keypad on mobile
+- **WHEN** user focuses a gravity field on a phone
+- **THEN** the numeric keypad opens (no decimal key needed)

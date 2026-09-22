@@ -120,3 +120,38 @@ def test_carbonation(client):
 
 def test_carbonation_requires_a_method(client):
     assert client.post("/api/calculate/carbonation", json={"target_vols": 2.4}).status_code == 422
+
+
+def test_mash_kettle_suggestion(client):
+    r = client.post("/api/calculate/mash", json={
+        "grain_kg": 5, "water_to_grain_ratio": 3.6, "kettle_capacity_l": 20, "sparge_water_l": 10,
+    })
+    s = r.json()["suggestion"]
+    assert s["action"] == "redistribute"
+    assert s["mash_water_l"] == pytest.approx(16.6)
+    assert s["sparge_water_l"] == pytest.approx(11.4)
+
+
+def test_mash_preboil_overflow(client):
+    body = client.post("/api/calculate/mash", json={
+        "grain_kg": 5, "kettle_capacity_l": 22, "preboil_volume_l": 24,
+    }).json()
+    assert body["suggestion"] is None
+    assert body["preboil"]["overflow_l"] == pytest.approx(2)
+
+
+def test_mash_recalculate_water_via_api(client):
+    body = client.post("/api/calculate/mash", json={
+        "grain_kg": 4.8, "kettle_capacity_l": 20, "sparging": True,
+        "recalculate": {"batch_size_l": 20, "dead_space_l": 0, "boil_off_rate_l_h": 1, "boil_time_min": 60, "ratio": 3.0},
+    }).json()
+    r = body["recalculation"]
+    assert r["fits"] is True
+    assert r["mash_water_l"] == pytest.approx(14.4)
+    assert r["sparge_water_l"] == pytest.approx(11.4)
+    assert r["preboil_volume_l"] == pytest.approx(21.0)
+
+
+def test_mash_without_recalculate_field_stays_backward_compatible(client):
+    body = client.post("/api/calculate/mash", json={"grain_kg": 5, "water_to_grain_ratio": 3.6}).json()
+    assert body["recalculation"] is None
