@@ -1,0 +1,38 @@
+# Produção: baixa as imagens publicadas no Docker Hub, sem compilar nada no servidor.
+#
+#   docker compose -f docker-compose.prod.yml pull
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Para subir outra versão sem editar este arquivo:
+#   BREW_VERSION=v2 docker compose -f docker-compose.prod.yml up -d
+
+services:
+  backend:
+    image: samirgoes/brew-copilot-backend:${BREW_VERSION:-v1}
+    # Sem porta publicada: o nginx do frontend já alcança a API pela rede interna.
+    # Descomente para expor o /docs (a API em si já é acessível por /api no frontend):
+    # ports:
+    #   - "8000:8000"
+    volumes:
+      # Volume nomeado: o SQLite sobrevive a atualizar ou recriar o container.
+      - brew-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')\""]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  frontend:
+    image: samirgoes/brew-copilot-frontend:${BREW_VERSION:-v1}
+    ports:
+      - "${BREW_PORT:-3000}:80"
+    depends_on:
+      # O nginx resolve "backend" ao subir; espera o backend responder antes.
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  brew-data:

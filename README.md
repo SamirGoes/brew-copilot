@@ -20,7 +20,7 @@ Pensado para uso no celular durante a brassagem: campos grandes, teclado numéri
 
 ## Como rodar
 
-### Docker (recomendado para deixar no ar)
+### Docker (compilando localmente)
 
 ```bash
 docker compose up -d --build
@@ -32,6 +32,27 @@ docker compose up -d --build
 Para parar: `docker compose down`. Os dados ficam no volume `brew-data` e sobrevivem a parar, recriar ou atualizar os containers.
 
 > **Não use `docker compose down -v`** a menos que queira apagar o histórico: a flag `-v` remove o volume junto.
+
+### Deploy num servidor (imagens prontas)
+
+As imagens estão publicadas no Docker Hub, então o servidor não precisa compilar nada — basta o arquivo `docker-compose.prod.yml`:
+
+```bash
+docker compose -f docker-compose.prod.yml pull
+docker compose -f docker-compose.prod.yml up -d
+```
+
+O app fica na porta 3000. Só o frontend é exposto: o nginx alcança a API pela rede interna e a publica em `/api`. Para expor também o `/docs`, descomente o bloco `ports` do backend no arquivo.
+
+Imagens (`linux/amd64`): [`samirgoes/brew-copilot-backend`](https://hub.docker.com/r/samirgoes/brew-copilot-backend) e [`samirgoes/brew-copilot-frontend`](https://hub.docker.com/r/samirgoes/brew-copilot-frontend), nas tags `v1` e `latest`.
+
+Para fixar outra versão sem editar o arquivo, ou trocar a porta:
+
+```bash
+BREW_VERSION=v2 BREW_PORT=8080 docker compose -f docker-compose.prod.yml up -d
+```
+
+> **Sem autenticação:** o app é de uso pessoal e não tem login (ver Não-objetivos). Quem alcançar a porta lê e escreve tudo — exponha só na sua rede local ou atrás de VPN, proxy com senha ou firewall.
 
 ### Desenvolvimento local
 
