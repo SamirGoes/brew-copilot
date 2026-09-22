@@ -7,13 +7,14 @@ from fastapi.middleware.cors import CORSMiddleware
 import app.models  # noqa: F401  (registra as tabelas no Base)
 from app.calculators.style_validator import load_styles
 from app.config import settings
-from app.database import Base, engine
+from app.database import Base, add_missing_columns, engine
 from app.routers import calculate, recipes, sessions, styles
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    Base.metadata.create_all(engine)
+    Base.metadata.create_all(engine)  # cria tabelas novas
+    add_missing_columns(engine)  # acrescenta colunas novas às tabelas existentes, sem perder dados
     load_styles()  # carrega o BJCP em memória no startup
     yield
 

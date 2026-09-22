@@ -1,122 +1,96 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { type ReactNode, useEffect, useState } from 'react'
+import { NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { errorMessage, sessions } from './api/client'
+import BrewDay from './components/BrewDay'
+import GravityTracker from './components/GravityTracker'
+import HopCalculator from './components/HopCalculator'
+import MashCalculator from './components/MashCalculator'
+import NewBrew from './components/NewBrew'
+import SessionHistory from './components/SessionHistory'
+import StyleView from './components/StyleView'
+import Tools from './components/Tools'
+import WaterChemistry from './components/WaterChemistry'
+import { type ToolPath, TOOLS } from './utils/tools'
 
-function App() {
-  const [count, setCount] = useState(0)
+const TOOL_ELEMENTS: Record<ToolPath, ReactNode> = {
+  mostura: <MashCalculator />,
+  gravidade: <GravityTracker />,
+  lupulo: <HopCalculator />,
+  agua: <WaterChemistry />,
+  estilos: <StyleView />,
+}
 
+/** `/` retoma a brassagem em andamento ou começa uma nova. */
+function Home() {
+  const [target, setTarget] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  useEffect(() => {
+    sessions
+      .list()
+      .then((list) => {
+        const active = list.find((s) => s.completed_at === null)
+        setTarget(active ? `/brassagem/${active.id}` : '/nova')
+      })
+      .catch((e) => setError(errorMessage(e)))
+  }, [])
+  if (error) return <p className="alert alert-bad">{error}</p>
+  return target ? <Navigate to={target} replace /> : <p className="muted">Carregando…</p>
+}
+
+function ToolPage({ children }: { children: ReactNode }) {
+  const navigate = useNavigate()
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <button type="button" className="link back-link" onClick={() => navigate(-1)}>
+        ← Voltar
+      </button>
+      {children}
     </>
   )
 }
 
-export default App
+export default function App() {
+  const { pathname } = useLocation()
+  const inBrew = pathname === '/' || pathname === '/nova' || pathname.startsWith('/brassagem')
+
+  return (
+    <div className="app">
+      <header className="app-header">
+        <h1>🍺 Brew Copilot</h1>
+      </header>
+
+      <main className="app-main">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/nova" element={<NewBrew />} />
+          <Route path="/brassagem/:id" element={<BrewDay />} />
+          <Route path="/historico" element={<SessionHistory />} />
+          <Route path="/ferramentas" element={<Tools />} />
+          {TOOLS.map((t) => (
+            <Route key={t.path} path={`/ferramentas/${t.path}`} element={<ToolPage>{TOOL_ELEMENTS[t.path]}</ToolPage>} />
+          ))}
+          {/* Endereços antigos das calculadoras */}
+          {TOOLS.map((t) => (
+            <Route key={`old-${t.path}`} path={`/${t.path}`} element={<Navigate to={`/ferramentas/${t.path}`} replace />} />
+          ))}
+          <Route path="*" element={<p className="card">Página não encontrada.</p>} />
+        </Routes>
+      </main>
+
+      <nav className="app-nav" aria-label="Navegação principal">
+        <NavLink to="/" className={inBrew ? 'active' : ''} end>
+          <span className="nav-icon" aria-hidden="true">🍺</span>
+          <span>Brassagem</span>
+        </NavLink>
+        <NavLink to="/ferramentas" className={({ isActive }) => (isActive ? 'active' : '')}>
+          <span className="nav-icon" aria-hidden="true">🧰</span>
+          <span>Ferramentas</span>
+        </NavLink>
+        <NavLink to="/historico" className={({ isActive }) => (isActive ? 'active' : '')}>
+          <span className="nav-icon" aria-hidden="true">📋</span>
+          <span>Histórico</span>
+        </NavLink>
+      </nav>
+    </div>
+  )
+}

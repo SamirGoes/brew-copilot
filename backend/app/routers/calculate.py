@@ -20,11 +20,14 @@ from app.schemas.calculate import (
     KettleCheckResponse,
     MashRequest,
     MashResponse,
+    PreboilCheckResponse,
     SaltsResponse,
     WaterDose,
     WaterProfileRow,
+    WaterRecalculationResponse,
     WaterRequest,
     WaterResponse,
+    WaterSplitResponse,
 )
 
 router = APIRouter(prefix="/api/calculate", tags=["calculate"])
@@ -48,7 +51,7 @@ def calculate_mash(req: MashRequest) -> MashResponse:
         strike = mash.strike_water(req.grain_kg, req.water_to_grain_ratio)
         volume = mash.mash_volume(req.grain_kg, strike)
         absorption = mash.grain_absorption(req.grain_kg)
-        kettle = None
+        kettle = suggestion = preboil = None
         if req.kettle_capacity_l is not None:
             k = mash.check_kettle_fit(volume, req.kettle_capacity_l)
             kettle = KettleCheckResponse(
@@ -60,6 +63,25 @@ def calculate_mash(req: MashRequest) -> MashResponse:
         sparge = None
         if req.preboil_volume_l is not None:
             sparge = mash.sparge_water(req.preboil_volume_l, first_runnings, enabled=req.sparging)
+        if req.kettle_capacity_l is not None:
+            planned_sparge = req.sparge_water_l if req.sparge_water_l is not None else sparge
+            s = mash.suggest_water_split(
+                req.grain_kg, strike, planned_sparge, req.kettle_capacity_l, sparging=req.sparging
+            )
+            if s is not None:
+                suggestion = WaterSplitResponse(**vars(s))
+            if req.preboil_volume_l is not None:
+                p = mash.check_preboil_fit(req.preboil_volume_l, req.kettle_capacity_l)
+                if p is not None:
+                    preboil = PreboilCheckResponse(**vars(p))
+        recalculation = None
+        if req.recalculate is not None and req.kettle_capacity_l is not None:
+            rc = req.recalculate
+            r = mash.recalculate_water(
+                req.grain_kg, rc.batch_size_l, rc.dead_space_l, rc.boil_off_rate_l_h,
+                rc.boil_time_min, req.kettle_capacity_l, ratio=rc.ratio, sparging=req.sparging,
+            )
+            recalculation = WaterRecalculationResponse(**vars(r))
     return MashResponse(
         strike_water_l=strike,
         mash_volume_l=volume,
@@ -67,6 +89,9 @@ def calculate_mash(req: MashRequest) -> MashResponse:
         first_runnings_l=first_runnings,
         kettle=kettle,
         sparge_water_l=sparge,
+        suggestion=suggestion,
+        preboil=preboil,
+        recalculation=recalculation,
     )
 
 

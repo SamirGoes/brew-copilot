@@ -7,12 +7,27 @@ from app.calculators.water import WaterProfile
 
 # --- Mostura ---------------------------------------------------------------
 
+class RecalculateWaterRequest(BaseModel):
+    """Presente em MashRequest para recalcular água do zero a partir do equipamento,
+    em vez de só ajustar reativamente o que já foi digitado."""
+
+    batch_size_l: float = Field(gt=0)
+    dead_space_l: float = Field(default=0.0, ge=0)
+    boil_off_rate_l_h: float = Field(default=0.0, ge=0)
+    boil_time_min: float = Field(default=60.0, ge=0)
+    ratio: float = Field(default=3.0, gt=0, description="L de água por kg de malte (2,5–4 recomendado)")
+
+
 class MashRequest(BaseModel):
     grain_kg: float = Field(gt=0)
     water_to_grain_ratio: float = Field(default=3.0, gt=0, description="L de água por kg de malte")
     kettle_capacity_l: float | None = Field(default=None, gt=0)
     sparging: bool = True
     preboil_volume_l: float | None = Field(default=None, gt=0, description="Volume pré-fervura alvo")
+    sparge_water_l: float | None = Field(
+        default=None, ge=0, description="Água de lavagem planejada (base para a sugestão de ajuste)"
+    )
+    recalculate: RecalculateWaterRequest | None = None
 
 
 class KettleCheckResponse(BaseModel):
@@ -23,6 +38,31 @@ class KettleCheckResponse(BaseModel):
     warning: str | None
 
 
+class WaterSplitResponse(BaseModel):
+    action: Literal["redistribute", "enable_sparge", "reduce_grain"]
+    mash_water_l: float | None
+    sparge_water_l: float | None
+    moved_l: float
+    max_grain_kg: float
+    message: str
+
+
+class PreboilCheckResponse(BaseModel):
+    overflow_l: float
+    warning: str
+
+
+class WaterRecalculationResponse(BaseModel):
+    fits: bool
+    ratio_used: float
+    mash_water_l: float
+    sparge_water_l: float | None
+    preboil_volume_l: float
+    mash_volume_l: float
+    max_grain_kg: float
+    warning: str | None
+
+
 class MashResponse(BaseModel):
     strike_water_l: float
     mash_volume_l: float
@@ -30,6 +70,9 @@ class MashResponse(BaseModel):
     first_runnings_l: float
     kettle: KettleCheckResponse | None
     sparge_water_l: float | None
+    suggestion: WaterSplitResponse | None = None
+    preboil: PreboilCheckResponse | None = None
+    recalculation: WaterRecalculationResponse | None = None
 
 
 # --- Gravidade -------------------------------------------------------------
