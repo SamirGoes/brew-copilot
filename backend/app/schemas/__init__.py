@@ -7,10 +7,17 @@ from app.schemas.recipe import (
     RecipeRead,
     RecipeUpdate,
 )
-from app.schemas.session import ReadingCreate, ReadingRead, SessionCreate, SessionRead, SessionUpdate
+from app.schemas.session import (
+    ReadingCreate,
+    ReadingRead,
+    SessionCreate,
+    SessionExport,
+    SessionRead,
+    SessionUpdate,
+)
 
 __all__ = [
     "GrainCreate", "GrainRead", "HopAdditionCreate", "HopAdditionRead",
     "RecipeCreate", "RecipeRead", "RecipeUpdate",
-    "ReadingCreate", "ReadingRead", "SessionCreate", "SessionRead", "SessionUpdate",
+    "ReadingCreate", "ReadingRead", "SessionCreate", "SessionExport", "SessionRead", "SessionUpdate",
 ]

@@ -79,6 +79,19 @@ export const sessions = {
   advancePhase: (id: number) => data(http.post<BrewSession>(`/sessions/${id}/phase`)),
   addReading: (id: number, req: ReadingCreate) =>
     data(http.post<Reading>(`/sessions/${id}/reading`, req)),
+  /** Baixa a sessão completa (receita + leituras) como arquivo .json. */
+  async download(id: number) {
+    const res = await http.get(`/sessions/${id}/export`, { responseType: 'blob' })
+    const match = /filename="(.+)"/.exec(res.headers['content-disposition'] ?? '')
+    const url = URL.createObjectURL(res.data as Blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = match?.[1] ?? `brassagem-${id}.json`
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+  },
 }
 
 export const health = () => data(http.get<{ status: string }>('/health'))

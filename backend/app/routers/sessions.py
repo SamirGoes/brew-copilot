@@ -1,11 +1,22 @@
+import re
+
 from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
 from app.database import get_db
 from app.models import PHASE_ORDER, BrewSession, Recipe, SessionReading
 from app.models.recipe import utcnow
-from app.schemas import ReadingCreate, ReadingRead, SessionCreate, SessionRead, SessionUpdate
+from app.schemas import (
+    ReadingCreate,
+    ReadingRead,
+    RecipeRead,
+    SessionCreate,
+    SessionExport,
+    SessionRead,
+    SessionUpdate,
+)
 
 router = APIRouter(prefix="/api/sessions", tags=["sessions"])
 
@@ -90,6 +101,28 @@ def advance_phase(session_id: int, db: Session = Depends(get_db)) -> SessionRead
     db.commit()
     db.refresh(session)
     return _read(session)
+
+
+def _slug(text: str) -> str:
+    """Nome de arquivo seguro a partir do nome da sessão."""
+    slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    return slug or "brassagem"
+
+
+@router.get("/{session_id}/export", response_model=SessionExport)
+def export_session(session_id: int, db: Session = Depends(get_db)) -> JSONResponse:
+    """Sessão completa em JSON (receita + todas as leituras), como arquivo para download."""
+    session = _get_or_404(db, session_id)
+    export = SessionExport(
+        exported_at=utcnow(),
+        session=_read(session),
+        recipe=RecipeRead.model_validate(session.recipe) if session.recipe else None,
+    )
+    filename = f"brassagem-{session.id}-{_slug(session.name)}.json"
+    return JSONResponse(
+        content=export.model_dump(mode="json"),
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @router.post("/{session_id}/reading", response_model=ReadingRead, status_code=201)

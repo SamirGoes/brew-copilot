@@ -169,9 +169,19 @@ export default function BrewDay() {
             {completed ? 'Concluída' : `Fase atual: ${PHASE_LABELS[session.current_phase]}`}
           </p>
         </div>
-        <Link to="/nova" className="btn btn-secondary">
-          + Nova
-        </Link>
+        <div className="head-actions">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            title="Baixar a brassagem completa em JSON"
+            onClick={() => sessions.download(sessionId).catch((e) => setError(errorMessage(e)))}
+          >
+            Exportar
+          </button>
+          <Link to="/nova" className="btn btn-secondary">
+            + Nova
+          </Link>
+        </div>
       </header>
 
       {completed && (

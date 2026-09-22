@@ -82,13 +82,13 @@
 
 ## 9. Data Persistence
 
-- [ ] 9.1 Implement recipe CRUD with SQLAlchemy in backend. Verify: recipes persist across server restart
-- [ ] 9.2 Implement session persistence with all readings. Verify: session data persists correctly
-- [ ] 9.3 Implement JSON export endpoint for sessions. Verify: exported file contains all session data
+- [x] 9.1 Implement recipe CRUD with SQLAlchemy in backend. Verify: recipes persist across server restart
+- [x] 9.2 Implement session persistence with all readings. Verify: session data persists correctly
+- [x] 9.3 Implement JSON export endpoint for sessions. Verify: exported file contains all session data
 
 ## 10. Docker & Deployment
 
-- [ ] 10.1 Create docker-compose.yml with backend and frontend services, named volume for data. Verify: `docker-compose config` validates
-- [ ] 10.2 Test full app in Docker: backend + frontend containers. Verify: data persists across container restarts
-- [ ] 10.3 Add README.md with setup instructions for local dev and Docker deployment. Verify: following README successfully runs the app
-- [ ] 10.4 Test docker-compose up from clean state. Verify: app accessible at localhost:3000, API at localhost:8000/docs
+- [x] 10.1 Create docker-compose.yml with backend and frontend services, named volume for data. Verify: `docker-compose config` validates
+- [x] 10.2 Test full app in Docker: backend + frontend containers. Verify: data persists across container restarts
+- [x] 10.3 Add README.md with setup instructions for local dev and Docker deployment. Verify: following README successfully runs the app
+- [x] 10.4 Test docker-compose up from clean state. Verify: app accessible at localhost:3000, API at localhost:8000/docs

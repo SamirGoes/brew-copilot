@@ -57,6 +57,15 @@ export default function SessionHistory() {
                 </span>
               )}
             </Link>
+            <button
+              type="button"
+              className="btn-icon"
+              aria-label={`Exportar ${s.name}`}
+              title="Baixar em JSON"
+              onClick={() => sessions.download(s.id).catch((e) => setError(errorMessage(e)))}
+            >
+              ⬇
+            </button>
             <button type="button" className="btn-icon" aria-label={`Excluir ${s.name}`} onClick={() => remove(s)}>
               🗑
             </button>

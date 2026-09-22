@@ -1,3 +1,5 @@
+import pytest
+
 RECIPE = {
     "name": "Session IPA",
     "style_number": "21A",
@@ -75,3 +77,32 @@ def test_deleting_recipe_keeps_session(client):
     client.delete(f"/api/recipes/{rid}")
     s = client.get(f"/api/sessions/{sid}").json()
     assert s["recipe_id"] is None and s["name"] == "Session IPA"
+
+
+def test_session_export_has_recipe_and_readings(client):
+    rid = client.post("/api/recipes", json=RECIPE).json()["id"]
+    sid = client.post("/api/sessions", json={"recipe_id": rid}).json()["id"]
+    client.post(f"/api/sessions/{sid}/reading", json={
+        "parameter": "og", "expected": 1.052, "actual": 1.048, "unit": "SG",
+    })
+    client.post(f"/api/sessions/{sid}/phase")
+
+    r = client.get(f"/api/sessions/{sid}/export")
+    assert r.status_code == 200
+    assert f'filename="brassagem-{sid}-session-ipa.json"' in r.headers["content-disposition"]
+
+    body = r.json()
+    assert body["exported_at"]
+    assert body["recipe"]["name"] == "Session IPA"
+    assert [g["name"] for g in body["recipe"]["grains"]] == ["Pilsen", "Crystal"]
+    readings = {(x["phase"], x["parameter"]): x for x in body["session"]["readings"]}
+    assert readings[("mash", "og")]["actual"] == 1.048
+    assert readings[("mash", "og")]["deviation"] == pytest.approx(-0.004)
+    assert ("mash", "phase_completed") in readings
+
+
+def test_session_export_without_recipe(client):
+    sid = client.post("/api/sessions", json={"name": "Solta"}).json()["id"]
+    body = client.get(f"/api/sessions/{sid}/export").json()
+    assert body["recipe"] is None
+    assert body["session"]["name"] == "Solta"

@@ -3,6 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, computed_field
 
 from app.models.session import Phase
+from app.schemas.recipe import RecipeRead
 
 
 class SessionCreate(BaseModel):
@@ -44,6 +45,14 @@ class ReadingRead(BaseModel):
         return self.actual - self.expected
 
 
+class SessionExport(BaseModel):
+    """Sessão autossuficiente para arquivo: o que foi planejado (receita) e o que aconteceu."""
+
+    exported_at: datetime
+    session: "SessionRead"
+    recipe: RecipeRead | None
+
+
 class SessionRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
@@ -55,3 +64,5 @@ class SessionRead(BaseModel):
     completed_at: datetime | None
     notes: str | None
     readings: list[ReadingRead] = []
+
+SessionExport.model_rebuild()
